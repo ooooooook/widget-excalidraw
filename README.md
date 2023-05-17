@@ -4,7 +4,7 @@
 
 插件效果（预览&编辑）：
 
-<img src="public/preview0.png" width="500"></img><img src="public/preivew1.png" width="500"></img>
+![](public/preview.png)
 
 ## 功能
 
