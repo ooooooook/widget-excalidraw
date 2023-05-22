@@ -1,4 +1,4 @@
-import { getAsset, getBlockId } from "./utils/siyuan";
+import { getSvgContent, getBlockAttrs, getBlockId } from "./utils/siyuan";
 import { useEffect, useState } from "react";
 import "./AppView.css";
 
@@ -8,7 +8,7 @@ function App() {
 
   const blockId = getBlockId();
   const reloadSvg = () => {
-    getAsset(blockId).then((_svg) => _svg && setSvg(_svg));
+    blockId && getSvgContent(blockId).then((_svg) => _svg && setSvg(_svg));
   };
 
   const openEditWindow = () => {
@@ -24,7 +24,12 @@ function App() {
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{ display: "flex", height: "99vh", justifyContent: "center" }}
+      style={{
+        display: "flex",
+        height: "100vh",
+        justifyContent: "center",
+        overflow: "hidden",
+      }}
     >
       <div
         className="toolbar"

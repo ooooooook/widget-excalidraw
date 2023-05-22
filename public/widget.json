@@ -2,5 +2,18 @@
     "name": "widget-excalidraw",
     "author": "ooooooook",
     "url": "https://github.com/ooooooook/widget-excalidraw",
-    "version": "0.1.0"
+    "version": "0.0.1",
+    "displayName": {
+        "default": "excalidraw"
+    },
+    "description": {
+        "default": "基于excalidraw的画图挂件，以SVG存储和预览文件"
+    },
+    "readme": {
+        "default": "README.md"
+    },
+    "i18n": [
+        "zh_CN"
+    ],
+    "funding": {}
 }

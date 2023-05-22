@@ -1,4 +1,6 @@
 // 获取内容块ID
+import { MIME_TYPES } from "@excalidraw/excalidraw";
+
 export function getBlockId(): string | null {
   return getBlockIdFromUrl() || getBlockIdFromParentDom();
 }
@@ -18,38 +20,55 @@ export function getBlockIdFromParentDom(): string | null {
   return parentDom?.getAttribute("data-node-id") || null;
 }
 
-export function getAsset(blockId: string | null): Promise<string | null> {
-  if (blockId) {
-    return fetch("/api/attr/getBlockAttrs", {
-      body: JSON.stringify({
-        id: blockId,
-      }),
-      method: "POST",
+// 获取配置项
+export function getOptions(blockId: string): Promise<Options> {
+  return getBlockAttrs(blockId).then((attrs: BlockAttrs) => {
+    return attrs.options;
+  });
+}
+
+// 获取assets内容
+export function getSvgContent(blockId: string): Promise<string> {
+  return getBlockAttrs(blockId).then((value: BlockAttrs) => {
+    const assert = value["data-assets"];
+    return assert ? getFile(assert) : Promise.resolve("");
+  });
+}
+
+// 获取块属性
+export function getBlockAttrs(blockId: string): Promise<BlockAttrs> {
+  return fetch("/api/attr/getBlockAttrs", {
+    body: JSON.stringify({
+      id: blockId,
+    }),
+    method: "POST",
+  })
+    .then((response) => {
+      return response.json();
     })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        return data.data["data-assets"] || data.data["custom-data-assets"];
-      })
-      .then((assert: string | null) => {
-        return assert ? getFile(assert) : Promise.resolve(null);
-      });
-  } else {
-    return Promise.resolve(null);
-  }
+    .then((e) => {
+      const dataAssets = e.data["data-assets"] || e.data["custom-data-assets"];
+      const optionsStr = e.data["options"] || e.data["custom-options"];
+      const options: Options = optionsStr ? JSON.parse(optionsStr) : {};
+      return { "data-assets": dataAssets, options };
+    });
 }
 
 // 设置块属性
-export function setAsset(asset: any): Promise<Response> {
+export function setBlockAttrs(attrs: BlockAttrs): Promise<Response> {
+  const options = JSON.stringify(attrs.options);
+  const dataAssets = attrs["data-assets"];
+  const body = JSON.stringify({
+    id: getBlockId(),
+    attrs: {
+      "data-assets": dataAssets,
+      "custom-data-assets": dataAssets,
+      options: options,
+      "custom-options": options,
+    },
+  });
   return fetch("/api/attr/setBlockAttrs", {
-    body: JSON.stringify({
-      id: getBlockId(),
-      attrs: {
-        "data-assets": asset,
-        "custom-data-assets": asset,
-      },
-    }),
+    body: body,
     method: "POST",
   });
 }
@@ -72,7 +91,6 @@ export function assetsUpload(
   filename: string,
   filedata: string
 ): Promise<string> {
-  const mime = "image/svg+xml";
   const blob = base64Encoded
     ? (() => {
         // base64 to Blob
@@ -82,9 +100,9 @@ export function assetsUpload(
         for (let i = 0; i < bytes.length; i++) {
           ia[i] = bytes.charCodeAt(i);
         }
-        return new Blob([ab], { type: mime });
+        return new Blob([ab], { type: MIME_TYPES.svg });
       })()
-    : new Blob([filedata], { type: mime });
+    : new Blob([filedata], { type: MIME_TYPES.svg });
   const file = new File([blob], filename, { lastModified: Date.now() });
 
   const formdata = new FormData();
@@ -103,3 +121,16 @@ export function assetsUpload(
       return assetsPath;
     });
 }
+
+// ------
+
+export declare type BlockAttrs = {
+  "data-assets": string;
+  options: Options;
+};
+
+export declare type Options = {
+  gridModeEnabled: boolean;
+  exportBackground: boolean;
+  theme: string;
+};

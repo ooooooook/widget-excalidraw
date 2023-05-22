@@ -36,14 +36,3 @@
     transform: rotate(360deg);
   }
 }
-
-.generic-btn {
-  border-radius: 0.5rem;
-  background-color: rgba(255, 255, 255, 0.96);
-  border-width: 1px;
-  border-style: solid;
-  border-color: #ebebeb;
-  font-size: 0.75rem;
-  width: 50px;
-  cursor: pointer;
-}

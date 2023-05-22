@@ -3,3 +3,19 @@
     top: 0;
     right: 0;
 }
+
+.generic-btn {
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.96);
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ebebeb;
+    font-size: 0.75rem;
+    margin: 2px;
+    width: 50px;
+    cursor: pointer;
+}
+
+.generic-btn:hover {
+    background-color: #f5f5f5;
+}
