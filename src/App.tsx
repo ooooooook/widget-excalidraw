@@ -10,12 +10,16 @@ import {
   WelcomeScreen,
 } from "@excalidraw/excalidraw";
 import {
+  AppState,
+  BinaryFiles,
   ExcalidrawImperativeAPI,
   ExcalidrawInitialDataState,
 } from "@excalidraw/excalidraw/types/types";
 import * as siyuan from "./utils/siyuan";
 import { serializeSVGToString } from "./utils/utils";
 import { getOptions } from "./utils/siyuan";
+import { backgroundIcon, gridIcon } from "./utils/icons";
+import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 
 function App() {
   const blockId = siyuan.getBlockId();
@@ -102,6 +106,15 @@ function App() {
     );
   };
 
+  const handleOnChange = (
+    elements: readonly ExcalidrawElement[],
+    appState: AppState,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    files: BinaryFiles
+  ) => {
+    setTheme(appState.theme);
+  };
+
   return (
     <>
       <div style={{ height: "100vh" }}>
@@ -119,9 +132,7 @@ function App() {
               toggleTheme: true,
             },
           }}
-          onChange={(elements, appState, files) => {
-            setTheme(appState.theme);
-          }}
+          onChange={handleOnChange}
         >
           <MainMenu>
             <MainMenu.DefaultItems.LoadScene />
@@ -132,11 +143,13 @@ function App() {
             <MainMenu.Separator />
             <MainMenu.DefaultItems.ToggleTheme />
             <MainMenu.Item
+              icon={gridIcon}
               onSelect={() => setGridModeEnabled(!gridModeEnabled)}
             >
               {gridModeEnabled ? "隐藏" : "显示"}网格
             </MainMenu.Item>
             <MainMenu.Item
+              icon={backgroundIcon}
               onSelect={() => setExportBackground(!exportBackground)}
             >
               {exportBackground ? "禁用" : "使用"}背景

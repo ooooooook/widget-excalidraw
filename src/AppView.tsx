@@ -29,6 +29,7 @@ function App() {
         height: "100vh",
         justifyContent: "center",
         overflow: "hidden",
+        zIndex: 1
       }}
     >
       <div
