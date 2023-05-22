@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/widgets/excalidraw/static/css/main.a6576d0b.css",
+    "main.js": "/widgets/excalidraw/static/js/main.57aafb66.js",
+    "index.html": "/widgets/excalidraw/index.html",
+    "main.a6576d0b.css.map": "/widgets/excalidraw/static/css/main.a6576d0b.css.map",
+    "main.57aafb66.js.map": "/widgets/excalidraw/static/js/main.57aafb66.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a6576d0b.css",
+    "static/js/main.57aafb66.js"
+  ]
+}
