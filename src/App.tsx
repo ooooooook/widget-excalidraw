@@ -45,6 +45,9 @@ function App() {
         return Promise.resolve({});
       } else {
         return siyuan.getSvgContent(blockId).then((svg: string) => {
+          if (!svg || svg === "") {
+            return {};
+          }
           return loadFromBlob(
             new Blob([svg], { type: MIME_TYPES.svg }),
             null,
