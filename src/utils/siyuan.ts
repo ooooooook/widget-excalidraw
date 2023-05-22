@@ -1,5 +1,6 @@
 // 获取内容块ID
-import { MIME_TYPES } from "@excalidraw/excalidraw";
+import { loadFromBlob, MIME_TYPES } from "@excalidraw/excalidraw";
+import { RestoredDataState } from "@excalidraw/excalidraw/types/data/restore";
 
 export function getBlockId(): string | null {
   return getBlockIdFromUrl() || getBlockIdFromParentDom();
@@ -32,6 +33,25 @@ export function getSvgContent(blockId: string): Promise<string> {
   return getBlockAttrs(blockId).then((value: BlockAttrs) => {
     const assert = value["data-assets"];
     return assert ? getFile(assert) : Promise.resolve("");
+  });
+}
+
+export function getRestoreDataState(
+  blockId: string | null
+): Promise<RestoredDataState> {
+  if (!blockId) {
+    return Promise.resolve({} as RestoredDataState);
+  }
+  return getSvgContent(blockId).then((svg: string) => {
+    if (!svg || svg === "") {
+      return {} as RestoredDataState;
+    }
+    return loadFromBlob(
+      new Blob([svg], { type: MIME_TYPES.svg }),
+      null,
+      null,
+      null
+    );
   });
 }
 

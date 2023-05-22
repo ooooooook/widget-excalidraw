@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(
 );
 const view = getURLSearchParams("view") === '1' || !getBlockIdFromUrl();
 root.render(
-  <React.StrictMode>
+  <>
     {view ? <AppView /> : <App />}
-  </React.StrictMode>
+  </>
 );

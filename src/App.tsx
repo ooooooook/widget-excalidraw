@@ -3,9 +3,7 @@ import "./App.css";
 import {
   Excalidraw,
   exportToSvg,
-  loadFromBlob,
   MainMenu,
-  MIME_TYPES,
   THEME,
   WelcomeScreen,
 } from "@excalidraw/excalidraw";
@@ -17,7 +15,6 @@ import {
 } from "@excalidraw/excalidraw/types/types";
 import * as siyuan from "./utils/siyuan";
 import { serializeSVGToString } from "./utils/utils";
-import { getOptions } from "./utils/siyuan";
 import { backgroundIcon, gridIcon } from "./utils/icons";
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 
@@ -28,35 +25,20 @@ function App() {
   const [theme, setTheme] = useState<string>(THEME.LIGHT);
   const [gridModeEnabled, setGridModeEnabled] = useState<boolean>(true);
   const [exportBackground, setExportBackground] = useState<boolean>(true);
+  const [initData, setInitData] = useState<ExcalidrawInitialDataState>();
 
   useEffect(() => {
     if (blockId) {
-      getOptions(blockId).then((options) => {
+      // 初始化配置项
+      siyuan.getOptions(blockId).then((options) => {
         setTheme(options.theme ?? THEME.LIGHT);
         setGridModeEnabled(options.gridModeEnabled ?? true);
         setExportBackground(options.exportBackground ?? true);
       });
+      // 初始化数据
+      siyuan.getRestoreDataState(blockId).then((e) => setInitData(e));
     }
-  }, [blockId]);
-
-  const loadDataFromSiyuan: () => Promise<ExcalidrawInitialDataState> =
-    async () => {
-      if (!blockId) {
-        return Promise.resolve({});
-      } else {
-        return siyuan.getSvgContent(blockId).then((svg: string) => {
-          if (!svg || svg === "") {
-            return {};
-          }
-          return loadFromBlob(
-            new Blob([svg], { type: MIME_TYPES.svg }),
-            null,
-            null,
-            null
-          );
-        });
-      }
-    };
+  }, []);
 
   const saveDataToSiyuan = () => {
     if (!excalidrawAPI) {
@@ -121,46 +103,48 @@ function App() {
   return (
     <>
       <div style={{ height: "100vh" }}>
-        <Excalidraw
-          ref={(api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api)}
-          initialData={loadDataFromSiyuan()}
-          langCode={"zh-CN"}
-          autoFocus
-          handleKeyboardGlobally
-          renderTopRightUI={renderTopRightUI}
-          gridModeEnabled={gridModeEnabled}
-          theme={theme}
-          UIOptions={{
-            canvasActions: {
-              toggleTheme: true,
-            },
-          }}
-          onChange={handleOnChange}
-        >
-          <MainMenu>
-            <MainMenu.DefaultItems.LoadScene />
-            <MainMenu.DefaultItems.SaveAsImage />
-            <MainMenu.DefaultItems.Export />
-            <MainMenu.DefaultItems.Help />
-            <MainMenu.DefaultItems.ClearCanvas />
-            <MainMenu.Separator />
-            <MainMenu.DefaultItems.ToggleTheme />
-            <MainMenu.Item
-              icon={gridIcon}
-              onSelect={() => setGridModeEnabled(!gridModeEnabled)}
-            >
-              {gridModeEnabled ? "隐藏" : "显示"}网格
-            </MainMenu.Item>
-            <MainMenu.Item
-              icon={backgroundIcon}
-              onSelect={() => setExportBackground(!exportBackground)}
-            >
-              {exportBackground ? "禁用" : "使用"}背景
-            </MainMenu.Item>
-            <MainMenu.DefaultItems.ChangeCanvasBackground />
-          </MainMenu>
-          <WelcomeScreen />
-        </Excalidraw>
+        {initData && (
+          <Excalidraw
+            ref={(api: ExcalidrawImperativeAPI) => setExcalidrawAPI(api)}
+            initialData={initData}
+            langCode={"zh-CN"}
+            autoFocus
+            handleKeyboardGlobally
+            renderTopRightUI={renderTopRightUI}
+            gridModeEnabled={gridModeEnabled}
+            theme={theme}
+            UIOptions={{
+              canvasActions: {
+                toggleTheme: true,
+              },
+            }}
+            onChange={handleOnChange}
+          >
+            <MainMenu>
+              <MainMenu.DefaultItems.LoadScene />
+              <MainMenu.DefaultItems.SaveAsImage />
+              <MainMenu.DefaultItems.Export />
+              <MainMenu.DefaultItems.Help />
+              <MainMenu.DefaultItems.ClearCanvas />
+              <MainMenu.Separator />
+              <MainMenu.DefaultItems.ToggleTheme />
+              <MainMenu.Item
+                icon={gridIcon}
+                onSelect={() => setGridModeEnabled(!gridModeEnabled)}
+              >
+                {gridModeEnabled ? "隐藏" : "显示"}网格
+              </MainMenu.Item>
+              <MainMenu.Item
+                icon={backgroundIcon}
+                onSelect={() => setExportBackground(!exportBackground)}
+              >
+                {exportBackground ? "禁用" : "使用"}背景
+              </MainMenu.Item>
+              <MainMenu.DefaultItems.ChangeCanvasBackground />
+            </MainMenu>
+            <WelcomeScreen />
+          </Excalidraw>
+        )}
       </div>
     </>
   );
