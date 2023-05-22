@@ -5,6 +5,14 @@
     z-index: 9999;
 }
 
+.imgbox {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 1;
+}
+
 .generic-btn {
     border-radius: 0.5rem;
     background-color: rgba(255, 255, 255, 0.96);
