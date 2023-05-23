@@ -1,7 +1,7 @@
 {
   "name": "widget-excalidraw",
   "version": "0.1.0",
-  "homepage": "/widgets/excalidraw/",
+  "homepage": "/widgets/widget-excalidraw/",
   "private": true,
   "dependencies": {
     "@excalidraw/excalidraw": "^0.15.2",

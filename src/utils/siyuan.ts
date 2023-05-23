@@ -126,7 +126,7 @@ export function assetsUpload(
   const file = new File([blob], filename, { lastModified: Date.now() });
 
   const formdata = new FormData();
-  formdata.append("assetsDirPath", "/assets/excalidraw/");
+  formdata.append("assetsDirPath", "/assets/widget-excalidraw/");
   formdata.append("file[]", file);
 
   return fetch("/api/asset/upload", {
