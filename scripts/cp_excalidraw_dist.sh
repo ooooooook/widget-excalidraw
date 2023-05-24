@@ -12,5 +12,5 @@ cp -f -r "$ROOT_DIR/node_modules/@excalidraw/excalidraw/dist" "$ROOT_DIR/public/
 # https://www.uncoverman.com/excalidraw-plguin-in-obsidian-support-font-custom.html
 # https://wordshub.github.io/free-font/font.html?MuYaoRuanBiShouXieTi_Regular
 # https://cloudconvert.com/ttf-to-woff2
-#cp -f "$ROOT_DIR/scripts/Muyao-Softbrush-2.woff2" "$ROOT_DIR/public/dist/excalidraw-assets/Virgil.woff2"
-#cp -f "$ROOT_DIR/scripts/Muyao-Softbrush-2.woff2" "$ROOT_DIR/public/dist/excalidraw-assets-dev/Virgil.woff2"
+cp -f "$ROOT_DIR/scripts/Chinese.woff2" "$ROOT_DIR/public/dist/excalidraw-assets/Virgil.woff2"
+cp -f "$ROOT_DIR/scripts/Chinese.woff2" "$ROOT_DIR/public/dist/excalidraw-assets-dev/Virgil.woff2"
