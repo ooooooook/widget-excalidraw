@@ -41,7 +41,7 @@ function App() {
   }, []);
 
   const saveDataToSiyuan = () => {
-    if (!excalidrawAPI) {
+    if (!blockId || !excalidrawAPI) {
       return;
     }
     const { viewBackgroundColor } = excalidrawAPI.getAppState();
@@ -62,19 +62,42 @@ function App() {
         return siyuan.assetsUpload(false, "0", svgString);
       })
       .then((assetsPath: string) => {
+        // 缓存旧路径
+        return siyuan.getBlockAttrs(blockId).then((e) => {
+          return {
+            oldAssetsPath: e["data-assets"],
+            assetsPath,
+          };
+        });
+      })
+      .then(({ oldAssetsPath, assetsPath }) => {
         const options: siyuan.Options = {
           gridModeEnabled,
           exportBackground,
           theme,
         };
-        return siyuan.setBlockAttrs({
-          "data-assets": assetsPath,
-          // 图片配置项
-          options: options,
-        });
+        return siyuan
+          .setBlockAttrs({
+            "data-assets": assetsPath,
+            // 图片配置项
+            options: options,
+          })
+          .then((e) => {
+            return {
+              oldAssetsPath,
+              response: e,
+            };
+          });
       })
-      .then((response: Response) => {
-        const message = response.ok ? "保存成功" : "保存失败";
+      .then(({ oldAssetsPath, response }) => {
+        let message;
+        if (response.ok) {
+          message = "保存成功";
+          // 确保在保存成功之后再删除旧文件(尽力为地删除，删除失败也没关系)
+          siyuan.removeFile(oldAssetsPath);
+        } else {
+          message = "保存失败";
+        }
         excalidrawAPI.setToast({ message, closable: true, duration: 1000 });
       });
   };

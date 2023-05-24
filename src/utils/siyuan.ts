@@ -105,6 +105,18 @@ export function getFile(path: string): Promise<string> {
   });
 }
 
+// 删除文件
+export function removeFile(path: string): Promise<any> {
+  return fetch("/api/file/removeFile", {
+    method: "POST",
+    body: JSON.stringify({
+      path: `data/${path}`,
+    }),
+  }).then((response) => {
+    return response.json();
+  });
+}
+
 // 上传资源文件
 export function assetsUpload(
   base64Encoded: boolean,
