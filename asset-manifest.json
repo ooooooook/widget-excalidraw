@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/widgets/widget-excalidraw/static/css/main.a6576d0b.css",
-    "main.js": "/widgets/widget-excalidraw/static/js/main.422d6f94.js",
+    "main.js": "/widgets/widget-excalidraw/static/js/main.d3cab0fb.js",
     "index.html": "/widgets/widget-excalidraw/index.html",
     "main.a6576d0b.css.map": "/widgets/widget-excalidraw/static/css/main.a6576d0b.css.map",
-    "main.422d6f94.js.map": "/widgets/widget-excalidraw/static/js/main.422d6f94.js.map"
+    "main.d3cab0fb.js.map": "/widgets/widget-excalidraw/static/js/main.d3cab0fb.js.map"
   },
   "entrypoints": [
     "static/css/main.a6576d0b.css",
-    "static/js/main.422d6f94.js"
+    "static/js/main.d3cab0fb.js"
   ]
 }
