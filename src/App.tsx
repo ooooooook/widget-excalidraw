@@ -74,8 +74,8 @@ function App() {
         });
       })
       .then((response: Response) => {
-        const message = response.ok ? "成功" : "失败";
-        return window.alert(`保存${message}`);
+        const message = response.ok ? "保存成功" : "保存失败";
+        excalidrawAPI.setToast({ message, closable: true, duration: 1000 });
       });
   };
 
