@@ -1,0 +1,92 @@
+name: Create Release
+
+on:
+    push:
+        branches:
+            - dev
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        if: startsWith(github.event.head_commit.message, 'v')
+        steps:
+
+            # Checkout
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  token: ${{ secrets.GH_TOKEN }}
+
+            # Install Node.js
+            - name: Install Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+                  registry-url: "https://registry.npmjs.org"
+
+            # Install dependencies
+            - name: Install dependencies
+              uses: borales/actions-yarn@v4
+              with:
+                  cmd: install
+            
+            # Build production bundle
+            - id: build
+              name: Build production bundle
+              uses: borales/actions-yarn@v4
+              with:
+                  cmd: build
+
+            # Checkout main
+            - name: Checkout main
+              uses: actions/checkout@v3
+              with:
+                  ref: main
+                  clean: false
+                  token: ${{ secrets.GH_TOKEN }}
+
+            # Copy Files
+            - name: Copy Files
+              run: |
+                  find . ! -path "./build*" ! -path "./.git*" -mindepth 1 -delete
+                  cp -r -f ./build/* ./
+                  rm -r build
+                  ls -al
+
+            # Git commit & push
+            - name: Git commit & push
+              run: |
+                git config --global user.name "ooooooook"
+                git config --global user.email "che.yx@qq.com"
+                git add .
+                git status
+                git commit -m "update"
+                git push -f origin main
+
+            # Create Release
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+              with:
+                  tag_name: ${{ github.event.head_commit.message }}
+                  release_name: ${{ github.event.head_commit.message }}
+                  draft: false
+                  prerelease: false
+
+            # Build Release Asset
+            - name: Build Release Asset
+              run: |
+                zip -r package.zip ./  -x  './git/*'
+
+            # Upload Release Asset
+            - name: Upload Release Asset
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./package.zip
+                  asset_name: package.zip
+                  asset_content_type: application/zip
