@@ -89,15 +89,17 @@ function App() {
           });
       })
       .then(({ oldAssetsPath, response }) => {
-        let message;
-        if (response.ok) {
-          message = "保存成功";
-          // 确保在保存成功之后再删除旧文件(尽力而为地删除，删除失败也没关系)
-          siyuan.removeFile(oldAssetsPath).then(r => r);
-        } else {
-          message = "保存失败";
-        }
-        excalidrawAPI.setToast({ message, closable: true, duration: 1000 });
+        response.json().then((e) => {
+          let message;
+          if (response.ok && e?.code === 0) {
+            message = "保存成功";
+            // 确保在保存成功之后再删除旧文件(尽力而为地删除，删除失败也没关系)
+            siyuan.removeFile(oldAssetsPath).then((r) => r);
+          } else {
+            message = "保存失败";
+          }
+          excalidrawAPI.setToast({ message, closable: true, duration: 1000 });
+        });
       });
   };
 
