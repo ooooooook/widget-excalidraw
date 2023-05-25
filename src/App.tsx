@@ -17,6 +17,7 @@ import * as siyuan from "./utils/siyuan";
 import { serializeSVGToString } from "./utils/utils";
 import { backgroundIcon, gridIcon } from "./utils/icons";
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
+import {debounce} from "lodash";
 
 function App() {
   const blockId = siyuan.getBlockId();
@@ -103,6 +104,14 @@ function App() {
       });
   };
 
+  const debounce_fun = debounce(saveDataToSiyuan,2000);
+
+  useEffect(()=>{
+    window.addEventListener('pointerup',debounce_fun)
+    return ()=>{
+      window.removeEventListener('pointerup',debounce_fun)
+    }
+  });
   const renderTopRightUI = () => {
     return (
       <>
