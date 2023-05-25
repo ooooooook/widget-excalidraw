@@ -71,16 +71,15 @@ function App() {
         });
       })
       .then(({ oldAssetsPath, assetsPath }) => {
-        const options: siyuan.Options = {
-          gridModeEnabled,
-          exportBackground,
-          theme,
-        };
         return siyuan
           .setBlockAttrs({
             "data-assets": assetsPath,
             // 图片配置项
-            options: options,
+            options: {
+              gridModeEnabled,
+              exportBackground,
+              theme,
+            },
           })
           .then((e) => {
             return {
@@ -93,8 +92,8 @@ function App() {
         let message;
         if (response.ok) {
           message = "保存成功";
-          // 确保在保存成功之后再删除旧文件(尽力为地删除，删除失败也没关系)
-          siyuan.removeFile(oldAssetsPath);
+          // 确保在保存成功之后再删除旧文件(尽力而为地删除，删除失败也没关系)
+          siyuan.removeFile(oldAssetsPath).then(r => r);
         } else {
           message = "保存失败";
         }
