@@ -6,6 +6,7 @@ on:
             - dev
         paths:
             - public/widget.json
+            - public/README.md
 jobs:
     build:
         runs-on: ubuntu-latest
