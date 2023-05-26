@@ -15,9 +15,14 @@ import {
 } from "@excalidraw/excalidraw/types/types";
 import * as siyuan from "./utils/siyuan";
 import { serializeSVGToString } from "./utils/utils";
-import { backgroundIcon, gridIcon } from "./utils/icons";
+import {
+  backgroundIcon,
+  gridIcon,
+  unsyncOffIcon,
+  syncIcon,
+} from "./utils/icons";
 import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
-import {debounce} from "lodash";
+import { debounce } from "lodash";
 
 function App() {
   const blockId = siyuan.getBlockId();
@@ -27,6 +32,7 @@ function App() {
   const [gridModeEnabled, setGridModeEnabled] = useState<boolean>(true);
   const [exportBackground, setExportBackground] = useState<boolean>(true);
   const [initData, setInitData] = useState<ExcalidrawInitialDataState>();
+  const [autoSave, setAutoSave] = useState<boolean>(true);
 
   useEffect(() => {
     if (blockId) {
@@ -41,7 +47,7 @@ function App() {
     }
   }, []);
 
-  const saveDataToSiyuan = () => {
+  const saveDataToSiyuan = (hints: boolean) => {
     if (!blockId || !excalidrawAPI) {
       return;
     }
@@ -99,24 +105,21 @@ function App() {
           } else {
             message = "保存失败";
           }
-          excalidrawAPI.setToast({ message, closable: true, duration: 1000 });
+          if (hints) {
+            excalidrawAPI.setToast({ message, closable: true, duration: 1000 });
+          }
         });
       });
   };
 
-  const debounce_fun = debounce(saveDataToSiyuan,2000);
-
-  useEffect(()=>{
-    window.addEventListener('pointerup',debounce_fun)
-    return ()=>{
-      window.removeEventListener('pointerup',debounce_fun)
-    }
-  });
   const renderTopRightUI = () => {
     return (
       <>
         {blockId && (
-          <button className="library-button" onClick={() => saveDataToSiyuan()}>
+          <button
+            className="library-button"
+            onClick={() => saveDataToSiyuan(true)}
+          >
             保存
           </button>
         )}
@@ -132,6 +135,22 @@ function App() {
   ) => {
     setTheme(appState.theme);
   };
+
+  const debounceFun: EventListener = debounce(
+    () => saveDataToSiyuan(false),
+    2000
+  );
+
+  useEffect(() => {
+    if (autoSave) {
+      window.addEventListener("pointerup", debounceFun);
+    } else {
+      window.removeEventListener("pointerup", debounceFun);
+    }
+    return () => {
+      window.removeEventListener("pointerup", debounceFun);
+    };
+  }, [autoSave, excalidrawAPI]);
 
   return (
     <>
@@ -157,8 +176,8 @@ function App() {
               <MainMenu.DefaultItems.LoadScene />
               <MainMenu.DefaultItems.SaveAsImage />
               <MainMenu.DefaultItems.Export />
-              <MainMenu.DefaultItems.Help />
               <MainMenu.DefaultItems.ClearCanvas />
+              <MainMenu.DefaultItems.Help />
               <MainMenu.Separator />
               <MainMenu.DefaultItems.ToggleTheme />
               <MainMenu.Item
@@ -174,6 +193,13 @@ function App() {
                 {exportBackground ? "禁用" : "使用"}背景
               </MainMenu.Item>
               <MainMenu.DefaultItems.ChangeCanvasBackground />
+              <MainMenu.Separator />
+              <MainMenu.Item
+                onSelect={() => setAutoSave(!autoSave)}
+                icon={autoSave ? syncIcon : unsyncOffIcon}
+              >
+                自动保存（{autoSave ? "已开启" : "已关闭"}）
+              </MainMenu.Item>
             </MainMenu>
             <WelcomeScreen />
           </Excalidraw>
