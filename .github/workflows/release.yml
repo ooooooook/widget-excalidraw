@@ -68,6 +68,9 @@ jobs:
                 git status
                 git commit -m "update to $RELEASE_VERSION"
                 git push -f origin main
+                COMMITISH=`git rev-parse main`
+                echo "COMMITISH=$COMMITISH"
+                echo "COMMITISH=$COMMITISH" >> $GITHUB_ENV
 
             # Create Release
             - name: Create Release
@@ -81,6 +84,7 @@ jobs:
                   draft: false
                   prerelease: false
                   body: ${{ env.RELEASE_VERSION }}
+                  commitish: ${{ env.COMMITISH }}
 
             # Build Release Asset
             - name: Build Release Asset
