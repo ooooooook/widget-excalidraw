@@ -18,11 +18,12 @@ jobs:
               with:
                   token: ${{ secrets.GH_TOKEN }}
 
-            - name: getVersion
+            - name: Get RELEASE_VERSION
               run: |
                 RELEASE_VERSION=`grep -o '"version": "[^"]*",' public/widget.json | sed 's/"version": "//' | sed 's/",$//'`
-                echo "RELEASE_VERSION=v$RELEASE_VERSION" >> $GITHUB_ENV
+                RELEASE_VERSION=v$RELEASE_VERSION
                 echo "RELEASE_VERSION=$RELEASE_VERSION"
+                echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
 
             # Install dependencies
             - name: Install dependencies
@@ -36,6 +37,11 @@ jobs:
               uses: borales/actions-yarn@v4
               with:
                   cmd: build
+
+            # Copy LICENSE
+            - name: Copy LICENSE
+              run: |
+                cp LICENSE build/
 
             # Checkout main
             - name: Checkout main
@@ -79,7 +85,8 @@ jobs:
             # Build Release Asset
             - name: Build Release Asset
               run: |
-                zip -r package.zip ./  -x  './git/*'
+                rm -rf .git
+                zip -r package.zip ./
 
             # Upload Release Asset
             - name: Upload Release Asset
