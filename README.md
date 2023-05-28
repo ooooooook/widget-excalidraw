@@ -16,7 +16,7 @@
 
 ## 开发指南
 
-项目源码在本仓库的dev分支。
+项目源码在本仓库的 [dev](https://github.com/ooooooook/widget-excalidraw/tree/dev) 分支。
 
 ## 更新日志
 
