@@ -150,7 +150,7 @@ function App() {
     return () => {
       window.removeEventListener("pointerup", debounceFun);
     };
-  }, [autoSave, excalidrawAPI]);
+  }, [autoSave, excalidrawAPI, theme, exportBackground, gridModeEnabled]);
 
   return (
     <>
