@@ -36,6 +36,15 @@ function App() {
 
   useEffect(() => {
     if (blockId) {
+      // 在开启授权码模式时，思源笔记伺服无法根据当前url自动重定向到授权页，所以这里需要手动拼跳转的url
+      siyuan.isAuthEnable().then((auth) => {
+        if(auth) {
+          const { pathname, search } = window.location;
+          const url = '/check-auth?to=' + encodeURIComponent(pathname + search);
+          window.location.href=url;
+        }
+      });
+
       // 初始化配置项
       siyuan.getOptions(blockId).then((options) => {
         setTheme(options.theme ?? THEME.LIGHT);

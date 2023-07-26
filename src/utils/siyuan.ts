@@ -154,6 +154,17 @@ export function assetsUpload(
     });
 }
 
+// 判断是否开启授权
+export async function isAuthEnable(): Promise<boolean> {
+  const reponse = await fetch("/api/attr/getBlockAttrs", {
+    body: JSON.stringify({
+      id: getBlockId(),
+    }),
+    method: "POST",
+  });
+  return reponse.status === 401;
+}
+
 // ------
 
 export declare type BlockAttrs = {
